@@ -77,7 +77,9 @@ export default {
 
         // 设置消息接收的回调函数
         this.eventSource.onmessage = (event) => {
+          console.info("event:", event);
           const data = JSON.parse(event.data);
+          console.info("data:", data);
           this.messages[this.messages.length - 1].text += data.choices[0].delta.content;
         };
 
