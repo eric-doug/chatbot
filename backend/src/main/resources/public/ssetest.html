@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sse demo</title>
+</head>
+<body>
+<div id="result">
+</div>
+
+<script>
+  var sseSource = new EventSource("http://localhost:8080/sse/connect");
+
+  sseSource.onopen = function() {
+    console.log("连接")；
+  }
+
+  sseSource.onerror = function(err) {
+    console.log("error: ", err);
+  }
+
+  sseSource.onmessage = function(event) {
+    console.log("receive:", event);
+    handleReceiveData(JSON.parse(event.data));
+  }
+</script>
+</body>
+</html>

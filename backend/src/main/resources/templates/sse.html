@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>sse demo</title>
+</head>
+<body>
+<div id="result">
+</div>
+
+<script>
+  var sseSource = new EventSource("http://localhost:8080/sse/connect");
+
+  sseSource.onopen = function() {
+    console.log("连接")；
+  }
+
+  sseSource.onerror = function(err) {
+    console.log("error: ", err);
+  }
+
+  sseSource.onmessage = function(event) {
+    console.log("receive:", event);
+    handleReceiveData(JSON.parse(event.data));
+  }
+
+  function handleCloseSse() {
+    sseSource.close();
+  }
+
+  function handleReceiveData(data) {
+    let div = document.cerateElement('div');
+    div.innerHTML = data.data;
+    document.getElementById('result').appendChild(div);
+  }
+
+  function sendMessage() {
+    const message = document.querySelector("#message");
+    const data = {
+      data: message.value
+    };
+
+    message.value = ''
+
+    fetch('http://localhost:8080/sse/sendMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify(data)
+    })
+  }
+</script>
+</body>
+</html>
