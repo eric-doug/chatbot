@@ -1,0 +1,61 @@
+server:
+  port: 8081
+# 数据源
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: ${MYSQL-USER:root}
+      password: ${MYSQL-PWD:jiuzhoushop!}
+      url: jdbc:mysql://183.56.240.148:3306/chat-web?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8&allowMultiQueries=true&allowPublicKeyRetrieval=true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        #login-username: admin
+        #login-password: admin
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 10000
+          merge-sql: false
+        wall:
+          config:
+            multi-statement-allow: true
+  redis:
+    host: 183.56.240.148
+    port: 6379
+    database: 3
+    password: jiuzhoushop
+    timeout: 3000
+logging:
+  level:
+    com.jiuzhou: debug
+
+
+jiuzhou:
+  repeat:
+    swicth: true #是否开启防重
+    type: memory  # 可选 redis | memory
+    #    whiteIp: 127.0.0.1 #调用白名单
+    cacheTime: 120000 #缓存key时间
+
+aes:
+  encrypt:
+    open: true # 是否开启加密 true  or  false
+    showLog: true # 是否打印加解密log true  or  false
+    publicKey: mN4Yn8Or8r7SH1w3 # AES密钥
+    privateKey:  # RSA私钥
+    time: 600000
+
+system:
+  auth:
+    tokenExpireTime: 480
+    jwtKey:
+
+chatgpt:
+  apikey: xxxx
+  apiHost: https://api.openai.com/
+  isGpt4: false
+  modelName: gpt-3.5-turbo-1106
