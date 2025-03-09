@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 
 @Slf4j
-@RestController("/ds")
+@RestController
 public class DeepSeekController
 {
 
@@ -40,8 +40,9 @@ public class DeepSeekController
     private static final String MODEL_DEEPSEEK = "deepseek-r1:1.5b";
 
 
-    @GetMapping(value = "/stream")
+    @GetMapping("/stream")
     public void handleSse(String model, String message, HttpServletResponse response) {
+        log.info("model:" + model + "\n" + "message:" + message);
         response.setContentType("text/event-stream");
         response.setCharacterEncoding("utf-8");
         try (PrintWriter pw = response.getWriter()) {
@@ -65,10 +66,10 @@ public class DeepSeekController
     {
         Map<String, Object> params = new HashMap<>();
         params.put("prompt", message);
-        params.put("model", "deepseek-r1:1.5b");
+        params.put("model", MODEL_DEEPSEEK);
         params.put("stream", true);
 
-        String jsonParams = params.toString();
+        String jsonParams = JSON.toJSONString(params);
 
         Request.Builder builder = new Request.Builder().url(DS_OLLAMA_URL);
         RequestBody body = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), jsonParams);
