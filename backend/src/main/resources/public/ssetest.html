@@ -2,27 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sse demo</title>
+    <title>ssetest</title>
 </head>
 <body>
-<div id="result">
-</div>
 
-<script>
-  var sseSource = new EventSource("http://localhost:8080/sse/connect");
+<h3>请输入要发送给服务器的消息：</h3> <br />
 
-  sseSource.onopen = function() {
-    console.log("连接")；
-  }
+<label for="text">输入发送消息</label><input id="text" type="text" />
+<button onclick="sendToServer()">发送服务器消息</button>
+<button onclick="closeWebSocket()">关闭连接</button>
 
-  sseSource.onerror = function(err) {
-    console.log("error: ", err);
-  }
+<br>
+信息:
+<span id="message">
 
-  sseSource.onmessage = function(event) {
-    console.log("receive:", event);
-    handleReceiveData(JSON.parse(event.data));
-  }
+</span>
+
+<script type="text/javascript">
+    var message = document.getElementById('text').value;
+    const eventSource = new EventSource(
+        `/ds/stream?model='deepseek-r1:1.5b'&message=${message}`
+    );
+
+   eventSource.onmessage = (event) => {
+    let response = event.data;
+    console.log(response);
+    if (response == "end") {
+        return;
+    }
+
+    response = JSON.parse(response).content;
+    document.getElementById('message').innerHTML += response + '<br />';
+
+   }
+
 </script>
+
 </body>
 </html>
