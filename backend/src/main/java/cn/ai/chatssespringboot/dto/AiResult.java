@@ -4,70 +4,48 @@ import java.util.List;
 
 public class AiResult
 {
-    private Integer code;
-    private String message;
-    private String sid;
-    private String id;
-    private Long created;
-    private List<AiResultChoices> choices;
+    private String model;
+    private String created_at;
+    private String response;
+    private Boolean done;
 
-    public Integer getCode()
+    public String getModel()
     {
-        return code;
+        return model;
     }
 
-    public void setCode(Integer code)
+    public void setModel(String model)
     {
-        this.code = code;
+        this.model = model;
     }
 
-    public String getMessage()
+    public String getCreated_at()
     {
-        return message;
+        return created_at;
     }
 
-    public void setMessage(String message)
+    public void setCreated_at(String created_at)
     {
-        this.message = message;
+        this.created_at = created_at;
     }
 
-    public String getSid()
+    public String getResponse()
     {
-        return sid;
+        return response;
     }
 
-    public void setSid(String sid)
+    public void setResponse(String response)
     {
-        this.sid = sid;
+        this.response = response;
     }
 
-    public String getId()
+    public Boolean getDone()
     {
-        return id;
+        return done;
     }
 
-    public void setId(String id)
+    public void setDone(Boolean done)
     {
-        this.id = id;
-    }
-
-    public Long getCreated()
-    {
-        return created;
-    }
-
-    public void setCreated(Long created)
-    {
-        this.created = created;
-    }
-
-    public List<AiResultChoices> getChoices()
-    {
-        return choices;
-    }
-
-    public void setChoices(List<AiResultChoices> choices)
-    {
-        this.choices = choices;
+        this.done = done;
     }
 }

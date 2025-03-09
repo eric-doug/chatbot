@@ -10,10 +10,11 @@ import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,25 @@ public class DeepSeekController
         }
     }
 
+
+    @PostMapping("/streampost")
+    public void handleSsePost(@RequestBody Map<String, Object> request, HttpServletResponse response) {
+        String model = (String) request.get("model");
+        String message = (String) request.get("message");
+        log.info("model:" + model + "\n" + "message:" + message);
+        response.setContentType("text/event-stream");
+        response.setCharacterEncoding("utf-8");
+        try (PrintWriter pw = response.getWriter()) {
+            getDsResult(pw, message);
+            pw.write("data:end\n\n");
+            pw.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static String getContent(String data) {
 
         return "";
@@ -72,7 +92,7 @@ public class DeepSeekController
         String jsonParams = JSON.toJSONString(params);
 
         Request.Builder builder = new Request.Builder().url(DS_OLLAMA_URL);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), jsonParams);
+        okhttp3.RequestBody body = okhttp3.RequestBody.create(MediaType.parse("application/json;charset=utf-8"), jsonParams);
         Request request = builder.post(body).build();
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
@@ -100,8 +120,8 @@ public class DeepSeekController
                                 log.info("model output:{}", line);
                                 AiResult aiResult = JSON.parseObject(line, AiResult.class);
 
-                                log.info(aiResult.getMessage());
-                                pw.write("data:" + JSON.toJSONString(new ContentDto(aiResult.getMessage())) + "\n\n");
+                                log.info(aiResult.getResponse());
+                                pw.write("data:" + JSON.toJSONString(new ContentDto(aiResult.getResponse())) + "\n\n");
                                 pw.flush();
                             }
                             eventLatch.countDown();
